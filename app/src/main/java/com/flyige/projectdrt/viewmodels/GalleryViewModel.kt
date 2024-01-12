@@ -1,4 +1,4 @@
-package com.flyige.projectdrt.ui.gallery
+package com.flyige.projectdrt.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
