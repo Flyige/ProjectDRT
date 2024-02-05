@@ -5,7 +5,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.HomeFragment">
-    <include
-        android:id="@+id/included_item_daily_info"
-        layout="@layout/item_daily_info"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.flyige.projectdrt.beans
 
 import java.util.Date
+import kotlin.properties.Delegates
 
 /**
  * @author: yige
@@ -10,10 +11,9 @@ import java.util.Date
 data class DailyInfo(
     var date: String,
 ) {
-    var breakfast:String =""
-    var breakfastType:String =""
-    var lunch:String=""
-    var lunchType:String=""
-    var supper:String=""
-    var supperType:String=""
+    lateinit var beakfast:DailyMeals
+    lateinit var lunch:DailyMeals
+    lateinit var supper:DailyMeals
+    lateinit var other:DailyMeals
+    lateinit var training:DailyTraining
 }

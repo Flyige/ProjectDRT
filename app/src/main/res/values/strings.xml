@@ -10,12 +10,20 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <!--todo:翻译后面再做-->
 
+    <!--Daily Info-->
+    <!--Daily food -->
     <string name="item_daily_date">日期</string>
     <string name="item_daily_food_breakfast">早餐</string>
     <string name="item_daily_food_lunch">午餐</string>
     <string name="item_daily_food_supper">晚餐</string>
-    <string name="item_daily_food_else">其他</string>
-    <string name="item_daily_food_oily">油腻</string>
-    <string name="item_daily_food_mild">清淡</string>
+    <string name="item_daily_food_other">其他</string>
+    <string name="item_daily_food_type_oily">油腻</string>
+    <string name="item_daily_food_type_mild">清淡</string>
+    <!--todo:添加高碳，高蛋白-->
+    <!-- Daily training -->
+    <string name="item_daily_training">训练</string>
+    <string name="item_daily_training_intensity_high">高强度</string>
+    <string name="item_daily_training_intensity_low">低强度</string>
 </resources>

@@ -57,6 +57,6 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        binding.includedItemDailyInfo.tvItemDailyDateValue.text=getDate().toString()
+//        binding.includedItemDailyInfo.tvItemDailyDateValue.text=getDate().toString()
     }
 }

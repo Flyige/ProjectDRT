@@ -19,18 +19,17 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private val TAG:String = "MainActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setSupportActionBar(binding.appBarMain.toolbar)
         binding.appBarMain.fabAddDailyInfo.setOnClickListener { view ->
             //todo 这里打开 dailyDialog
             val dailyInfoDialogFragment = DailyInfoDialogFragment()
-            dailyInfoDialogFragment.show(supportFragmentManager,"dailyInfoDialog")
+            dailyInfoDialogFragment.show(supportFragmentManager,TAG)
         }
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
