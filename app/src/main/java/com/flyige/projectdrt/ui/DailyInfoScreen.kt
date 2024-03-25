@@ -1,9 +1,9 @@
 package com.flyige.projectdrt.ui
 
+import android.content.Context
 import android.os.Build
-import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material3.AlertDialogDefaults.shape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -23,6 +21,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,8 +29,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.flyige.projectdrt.R
 import com.flyige.projectdrt.beans.DailyInfo
 import com.flyige.projectdrt.beans.DailyMeals
@@ -53,7 +53,13 @@ import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DailyInfoScreen(dailyInfoViewModel: DailyInfoViewModel) {
+fun DailyInfoScreen(
+    context: Context?,
+    dailyInfoViewModel: DailyInfoViewModel,
+    onOperationFinish: () -> Unit
+) {
+    val TAG = "DailyInfoScreen"
+    val saveResult by dailyInfoViewModel.saveResult.observeAsState()
     //和 viewmodel 保持一致
     var date = LocalDate.now().toString()
     var meals = listOf<String>(
@@ -102,6 +108,12 @@ fun DailyInfoScreen(dailyInfoViewModel: DailyInfoViewModel) {
                 dailyMeals.add(DailyMeals(meal = meal, mealType = mealType))
             }
         }
+        var training by remember {
+            mutableStateOf("")
+        }
+        var trainingIntensity by remember {
+            mutableStateOf(0)
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -109,8 +121,6 @@ fun DailyInfoScreen(dailyInfoViewModel: DailyInfoViewModel) {
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.Bottom
         ) {
-            var training: String = ""
-            var trainingIntensity: Int = 0
             OutlinedTextField(
                 modifier = Modifier.wrapContentHeight(),
                 value = training,
@@ -120,25 +130,33 @@ fun DailyInfoScreen(dailyInfoViewModel: DailyInfoViewModel) {
             trainingIntensity = dailyTrainingIntensity()
             dailyTraining = DailyTraining(training, trainingIntensity)
         }
-        ElevatedButton(modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp),
-            onClick = { /*TODO*/ }){
-            Text(text = "提交")
-        }
-        var dailyInfo = DailyInfo(date)
-        dailyInfo.beakfast = dailyMeals[0]
+        var dailyInfo = DailyInfo(date.toString())
+        dailyInfo.breakfast = dailyMeals[0]
         dailyInfo.lunch = dailyMeals[1]
         dailyInfo.supper = dailyMeals[2]
         dailyInfo.other = dailyMeals[3]
         dailyInfo.training = dailyTraining
-        Log.d("fyg  ", "DailyInfoScreen: $dailyInfo")
-        dailyInfoViewModel.addDailyInfo(dailyInfo)
+//        dailyInfoViewModel.addDailyInfo(dailyInfo)
+        ElevatedButton(modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp),
+            onClick = {
+                dailyInfoViewModel.saveDailyInfoToDatabase(dailyInfo)
+            }) {
+            Text(text = "提交")
+        }
+        saveResult?.let { saveResult ->
+            if (saveResult != -1L) {
+                onOperationFinish()
+                Toast.makeText(context,"添加成功",Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(context, "添加失败", Toast.LENGTH_LONG).show()
+            }
+        }
     }
-
 }
 
-// TODO: 其实可以自己做个组件服用这种 radiogroup 
+// TODO: 其实可以自己做个组件复用这种 radiogroup
 @Composable
 fun DailyInfoMealType(): Int {
     val radioOptions = listOf(
@@ -213,14 +231,5 @@ fun dailyTrainingIntensity(): Int {
         }
     }
     return if (selectedOption == stringResource(id = R.string.item_daily_training_intensity_high)) TRAINING_TYPE_HIGH else TRAINING_TYPE_LOW
-
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview
-@Composable
-fun show() {
-    var viewModel = DailyInfoViewModel()
-    DailyInfoScreen(viewModel)
 
 }
