@@ -19,21 +19,14 @@ import kotlinx.coroutines.launch
  */
 class DailyInfoViewModel : ViewModel() {
     private val TAG = this.javaClass.name
-    private val _data = mutableStateListOf<DailyInfo>()
     private val _saveResult = MutableLiveData<Long>()
     val saveResult: LiveData<Long> = _saveResult
-    val dailyInfo: List<DailyInfo> get() = _data
-    fun addDailyInfo(dailyInfo: DailyInfo) {
-        if (dailyInfo.checkNull())
-            _data.add(dailyInfo)
-        else
-            LogUtil.e(TAG, "null info")
-    }
 
     fun saveDailyInfoToDatabase(dailyInfo: DailyInfo) {
+//        dailyInfo.date.toBigInteger()
+        LogUtil.i(TAG,"save daily info to database start ,date: "+dailyInfo.date)
         viewModelScope.launch { //kotlin携程
             var dailyInfoEntity = DailyInfoEntity(
-                1,
                 date = dailyInfo.date,
                 breakfast = dailyInfo.breakfast.meal,
                 breakfastType = dailyInfo.breakfast.mealType,

@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/tools">
+    xmlns:bind="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
     <data>
+
         <variable
             name="dailyInfoViewModel"
             type="com.flyige.projectdrt.viewmodels.DailyInfoViewModel" />
     </data>
-    <FrameLayout
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_view_daily_info_screen"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <androidx.compose.ui.platform.ComposeView
-            android:id="@+id/compose_view_daily_info_screen"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-    </FrameLayout>
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </layout>
 

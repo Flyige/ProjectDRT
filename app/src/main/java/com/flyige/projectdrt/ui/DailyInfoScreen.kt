@@ -4,16 +4,19 @@ import android.content.Context
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -27,11 +30,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.flyige.projectdrt.R
 import com.flyige.projectdrt.beans.DailyInfo
 import com.flyige.projectdrt.beans.DailyMeals
@@ -73,9 +73,9 @@ fun DailyInfoScreen(
     Column(
         modifier = Modifier
             .padding(10.dp)
-            .background(Color.White)
             .fillMaxWidth()
             .wrapContentHeight()
+            .verticalScroll(rememberScrollState())
     ) {
         // TODO: 而且要有 check 输入错误的逻辑考虑进去
         Row(
@@ -100,7 +100,9 @@ fun DailyInfoScreen(
                 }
                 var mealType: Int = 0
                 OutlinedTextField(
-                    modifier = Modifier.wrapContentHeight(),
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .width(200.dp),
                     value = meal,
                     onValueChange = { meal = it },
                     label = { Text(text = content) })
@@ -122,7 +124,9 @@ fun DailyInfoScreen(
             verticalAlignment = Alignment.Bottom
         ) {
             OutlinedTextField(
-                modifier = Modifier.wrapContentHeight(),
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .width(200.dp),
                 value = training,
                 onValueChange = { training = it },
                 label = { Text(text = "训练") }
@@ -130,7 +134,7 @@ fun DailyInfoScreen(
             trainingIntensity = dailyTrainingIntensity()
             dailyTraining = DailyTraining(training, trainingIntensity)
         }
-        var dailyInfo = DailyInfo(date.toString())
+        val dailyInfo = DailyInfo(date.toString())
         dailyInfo.breakfast = dailyMeals[0]
         dailyInfo.lunch = dailyMeals[1]
         dailyInfo.supper = dailyMeals[2]
@@ -139,6 +143,8 @@ fun DailyInfoScreen(
 //        dailyInfoViewModel.addDailyInfo(dailyInfo)
         ElevatedButton(modifier = Modifier
             .fillMaxWidth()
+            .height(IntrinsicSize.Max)
+//            .wrapContentHeight()
             .padding(start = 20.dp, end = 20.dp),
             onClick = {
                 dailyInfoViewModel.saveDailyInfoToDatabase(dailyInfo)
@@ -147,8 +153,8 @@ fun DailyInfoScreen(
         }
         saveResult?.let { saveResult ->
             if (saveResult != -1L) {
+                Toast.makeText(context, "添加成功", Toast.LENGTH_LONG).show()
                 onOperationFinish()
-                Toast.makeText(context,"添加成功",Toast.LENGTH_LONG).show()
             } else {
                 Toast.makeText(context, "添加失败", Toast.LENGTH_LONG).show()
             }
@@ -188,6 +194,7 @@ fun DailyInfoMealType(): Int {
                 Text(
                     text = text,
                     style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
         }
@@ -226,6 +233,7 @@ fun dailyTrainingIntensity(): Int {
                 Text(
                     text = text,
                     style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
         }

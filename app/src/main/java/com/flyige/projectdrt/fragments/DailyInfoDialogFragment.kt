@@ -1,7 +1,6 @@
 package com.flyige.projectdrt.fragments
 
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,13 +9,13 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.input.key.Key.Companion.H
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.flyige.projectdrt.MainActivity
 import com.flyige.projectdrt.R
 import com.flyige.projectdrt.listener.DailyInfoFragmentListener
 import com.flyige.projectdrt.ui.DailyInfoScreen
@@ -61,7 +60,7 @@ class DailyInfoDialogFragment : DialogFragment() {
     ): View? {
         dailyInfoViewModel =
             ViewModelProvider(this).get(DailyInfoViewModel::class.java)
-        return inflater.inflate(R.layout.daily_info_fragment, container, false)
+        return inflater.inflate(R.layout.daily_info_fragment, container, true)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -73,13 +72,14 @@ class DailyInfoDialogFragment : DialogFragment() {
             // 如果状态为 true，则触发 dismiss
             if (shouldDismiss.value) {
                 LaunchedEffect(Unit) {
-                    returnResult("finish")
+                    returnResult("dismiss")
                     dismiss()
                 }
             }
             // 传递一个 lambda 给 DailyInfoScreen，当需要关闭对话框时，更新状态
             DailyInfoScreen(context, dailyInfoViewModel) {
                 LogUtil.d(TAG, "获得数据库操作反馈")
+                returnResult("finish")
                 shouldDismiss.value = true  // 这将触发上面的 if 判断和 LaunchedEffect
             }
         }
@@ -94,6 +94,7 @@ class DailyInfoDialogFragment : DialogFragment() {
     }
 
     fun returnResult(result: String) {
+        LogUtil.d("fyg","返回结果: ${listener==null}")
         listener?.onResult(result)
     }
 

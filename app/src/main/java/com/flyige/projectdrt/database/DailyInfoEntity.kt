@@ -1,20 +1,23 @@
 package com.flyige.projectdrt.database
 
+import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.flyige.projectdrt.constants.DATABASE_TABLE
-import java.util.Date
 
 /**
  * @author: yige
  * @params:参照 DailyInfo
  * @date: 2024 2024/3/4 11:24
  */
-@Entity(tableName = DATABASE_TABLE)
+@Entity(
+    tableName = DATABASE_TABLE,
+    indices = [Index(value = ["date"], unique = true)]
+)
 data class DailyInfoEntity(
-    @PrimaryKey(autoGenerate = true) var id: Int,
-    @ColumnInfo(name = "date") var date: String? = null,
+    @PrimaryKey(false) @NonNull var date:String ="",
     @ColumnInfo(name = "breakfast") var breakfast: String? = "",
     @ColumnInfo(name = "breakfastType") var breakfastType: Int? = -1,
     @ColumnInfo(name = "lunch") var lunch: String? = "",

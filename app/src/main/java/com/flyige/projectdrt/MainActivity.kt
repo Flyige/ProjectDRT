@@ -1,13 +1,9 @@
 package com.flyige.projectdrt
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -21,27 +17,23 @@ import com.flyige.projectdrt.databinding.ActivityMainBinding
 import com.flyige.projectdrt.fragments.DailyInfoDialogFragment
 import com.flyige.projectdrt.listener.DailyInfoFragmentListener
 import com.flyige.projectdrt.utils.LogUtil
-import com.flyige.projectdrt.viewmodels.MainActivityViewModel
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity(), DailyInfoFragmentListener {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
+    lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    private val viewmodel: MainActivityViewModel by lazy {
-        ViewModelProvider(this).get(
-            MainActivityViewModel::class.java
-        )
-    }
-    private val TAG: String = "MainActivity"
+    private val TAG: String = this.javaClass.name
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        init()
+        initDataBase()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
         binding.appBarMain.fabAddDailyInfo.setOnClickListener { view ->
+//            showDailyInfoDialog()
+            // TODO: 直接显示composable的话UI有问题，有啥好办法跳过 fragment 这一层
             val dailyInfoDialogFragment = DailyInfoDialogFragment()
             dailyInfoDialogFragment.listener = this
             dailyInfoDialogFragment.show(supportFragmentManager, TAG)
@@ -71,19 +63,15 @@ class MainActivity : AppCompatActivity(), DailyInfoFragmentListener {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    fun init() {
+    fun initDataBase() {
         // CHECKPOINT: By:Yige 需要检查数据库是否创建吗？
         database =
-            Room.databaseBuilder(applicationContext, DRTDataBase::class.java, DATABASE_NAME).build()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewmodel.loadData()
+            Room.databaseBuilder(applicationContext, DRTDataBase::class.java, DATABASE_NAME)
+                .build()
     }
 
     override fun onResult(result: String) {
-        LogUtil.i(TAG, "数据库操作结果：$result")
-        viewmodel.loadData()
+        LogUtil.d("fyg","爷收到了: $result")
+
     }
 }
